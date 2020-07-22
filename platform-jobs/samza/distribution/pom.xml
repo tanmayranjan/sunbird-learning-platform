@@ -99,6 +99,13 @@
 			<type>tar.gz</type>
 			<classifier>distribution</classifier>
 		</dependency>
+		<dependency>
+			<groupId>org.ekstep</groupId>
+			<artifactId>mvc-processor</artifactId>
+			<version>1.0.0</version>
+			<type>tar.gz</type>
+			<classifier>distribution</classifier>
+		</dependency>
 	</dependencies>
     <build>
         <plugins>
