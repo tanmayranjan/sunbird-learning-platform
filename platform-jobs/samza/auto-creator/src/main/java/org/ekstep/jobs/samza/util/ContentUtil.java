@@ -64,6 +64,12 @@ public class ContentUtil {
 		String contentStage = "";
 		String internalId = "";
 		Boolean isPublished = false;
+		// Added by tanmay as pkgVersion can also be an integer value
+		// start
+		if(metadata.get(AutoCreatorParams.pkgVersion.name()) != null &&  metadata.get(AutoCreatorParams.pkgVersion.name()) instanceof Integer) {
+			metadata.put(AutoCreatorParams.pkgVersion.name(),String.valueOf(metadata.get(AutoCreatorParams.pkgVersion.name())));
+		}
+		// end
 		Double pkgVersion = Double.parseDouble((String) metadata.getOrDefault(AutoCreatorParams.pkgVersion.name(), "0.0"));
 		Map<String, Object> createMetadata = new HashMap<String, Object>();
 		Map<String, Object> contentMetadata = searchContent(identifier);
