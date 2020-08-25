@@ -1,6 +1,5 @@
 package org.ekstep.mvcjobs.samza.service.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.ekstep.common.Platform;
 import org.ekstep.jobs.samza.util.JobLogger;
@@ -124,8 +123,9 @@ public class MVCProcessorCassandraIndexer  {
             JSONArray content = (JSONArray)input.get("content");
             content.put(contentdef);
             req.put("job",jobname);
-            LOGGER.info("MVCProcessorCassandraIndexer :: makepostreqForMlAPI  ::: The ML workbench URL is " + "http://"+Platform.config.getString("mlkeywordapi") + "/daggit/submit" );
-            String resp = HTTPUtil.makePostRequest("http://"+Platform.config.getString("mlkeywordapi") + "/daggit/submit",obj.toString());
+            String mlkeywordapi = Platform.config.hasPath("mlkeywordapi") ? Platform.config.getString("mlkeywordapi") : "";
+                    LOGGER.info("MVCProcessorCassandraIndexer :: makepostreqForMlAPI  ::: The ML workbench URL is " + "http://"+ mlkeywordapi + "/daggit/submit" );
+            String resp = HTTPUtil.makePostRequest("http://"+ mlkeywordapi + "/daggit/submit",obj.toString());
             LOGGER.info("MVCProcessorCassandraIndexer :: makepostreqForMlAPI  ::: The ML workbench response is " + resp );
         }
         catch (Exception e) {

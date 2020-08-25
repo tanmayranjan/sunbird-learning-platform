@@ -13,6 +13,7 @@ import java.util.*;
 
 public class CassandraConnector {
     private  static  JobLogger LOGGER = new JobLogger(CassandraConnector.class);
+    private static String keyspace;
 
   static  String arr[],table = "content_data";
    static Session session;
@@ -21,8 +22,7 @@ public class CassandraConnector {
             LOGGER.info("CassandraSession Exists");
             return session;
         }
-        String serverIP = Platform.config.getString("cassandra.lp.connection");
-        LOGGER.info("Cassandra keyspace is " + Platform.config.getString("cassandra.keyspace"));
+        String serverIP = Platform.config.hasPath("cassandra.lp.connection") ? Platform.config.getString("cassandra.lp.connection") : "127.0.0.1:9042";
         if(serverIP == null) {
             LOGGER.info("Server ip of cassandra is null");
         }
@@ -33,7 +33,12 @@ public class CassandraConnector {
                 .addContactPointsWithPorts(addressList)
                 .build();
 
-        session = cluster.connect(Platform.config.getString("cassandra.keyspace"));
+        session = cluster.connect();
+        keyspace = Platform.config.hasPath("cassandra.keyspace")
+                ? Platform.config.getString("cassandra.keyspace")
+                : "dock_content_store";
+        LOGGER.info("Cassandra keyspace is " + keyspace);
+//        session = cluster.connect(Platform.config.getString("cassandra.keyspace"));
         LOGGER.info("The server IP " + serverIP + "\n Session created " + session);
         return session;
     }
@@ -70,7 +75,7 @@ public class CassandraConnector {
     private static String getUpdateQuery(Set<String> properties) {
         StringBuilder sb = new StringBuilder();
         if (null != properties && !properties.isEmpty()) {
-            sb.append("UPDATE " + table + " SET last_updated_on = dateOf(now()), ");
+            sb.append("UPDATE " + keyspace + "." + table + " SET last_updated_on = dateOf(now()), ");
             StringBuilder updateFields = new StringBuilder();
             for (String property : properties) {
                 if (StringUtils.isBlank(property))
